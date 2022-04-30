@@ -10,6 +10,9 @@ Custom hooks (functions that executes when 'org' files are opened.
 	(+zen/toggle)
     (my/org-mode/load-prettify-symbols)
 )
+(remove-hook! 'org-tab-first-hook
+             #'+org-yas-expand-maybe-h
+             #'+org-indent-maybe-h)
 #+end_src
 ** Pretty simbols
 #+begin_src emacs-lisp
@@ -45,7 +48,8 @@ Custom hooks (functions that executes when 'org' files are opened.
 #+end_src
 ** Configuration
 #+begin_src emacs-lisp
-(setq org-startup-indented t
+(setq
+      org-startup-indented t
       org-bullets-bullet-list '("") ;; no bullets, needs org-bullets package
       org-bullets-face-name ""
       org-ellipsis "  " ;; folding symbol
@@ -56,7 +60,7 @@ Custom hooks (functions that executes when 'org' files are opened.
       org-fontify-whole-heading-line t
       org-fontify-done-headline t
       org-fontify-quote-and-verse-blocks t
-      org-superstar-headline-bullets-list '("" "" "" "" "")
+      org-superstar-headline-bullets-list '(" " " " " " " " " ")
 )
 #+end_src
 ** org-headings
@@ -85,6 +89,21 @@ Custom hooks (functions that executes when 'org' files are opened.
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 ;)
 #+end_src
+* Org-export
+** man exports
+#+begin_src emacs-lisp
+(require 'ox-man)
+#+end_src
+** html
+From the Org-mode Manual:
+
+#+begin_quote
+See the variable org-html-doctype-alist for details. *The default is "xhtml-strict".*
+#+end_quote
+#+begin_src emacs-lisp
+(setq org-html-doctype "html5")
+(setq org-html-prefer-user-labels t)
+#+end_src
 * Org-Publish
 ** functions
 #+begin_src emacs-lisp
@@ -94,17 +113,30 @@ Custom hooks (functions that executes when 'org' files are opened.
 ;            (org-publish-find-title entry project)
 ;            (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))))
 #+end_src
-** Publish everything
+** Timestamps
 The following makes /org-publish/ publish every file and not only the ones that has changed.
 
 This is only useful when starting a website (testing css, html preambles, etc), but after you got the base this makes publishing slow.
 #+begin_src emacs-lisp
-(setq org-publish-use-timestamps-flag nil)
+(setq
+ org-export-with-timestamps      nil
+ org-export-time-stamp-file      nil
+ org-publish-use-timestamps-flag nil
+)
+#+end_src
+**  variables
+#+begin_src emacs-lisp
+(defvar me/blogpreamble
+  "<div class='preamble'><div class='homepage'><a href='/'>Home</a> | <a href='/about_me'>About me</a> | <a href='/microblog'>Miniblog</a></div><div class='langs'><a href='/es/'>Español</a> | <a href='/it/'>Italiano</a></div></div>"
+)
+(defvar me/blogfooter
+  "<div class='footerCopy'>This work is licensed under CC-BY-SA 2.0, <a href='/License'>unless specified otherwise</a>. Year: 2022<a rel='license' href='http://creativecommons.org/licenses/by-sa/2.0/'><img src='/img/cc-by-sa.png' width='150px'></a></div>"
+)
 #+end_src
 ** Blog
 #+begin_src emacs-lisp
 (setq org-publish-project-alist
-      '(("org"
+      `(("org"
         :base-directory "~/Docs/Blog/"
         :publishing-directory "~/Coooode/Github/pages"
         :publishing-function org-html-publish-to-html
@@ -112,19 +144,18 @@ This is only useful when starting a website (testing css, html preambles, etc), 
         :recursive t
         :section-numbers nil
         :with-toc nil
-        :html-head "<link rel=\"stylesheet\" href=\"/style.css\" type=\"text/css\"/>"
+        :html-head "<link rel='stylesheet' href='/style.css' type='text/css'/>"
+		:html-preamble ,me/blogpreamble
+		:html-postamble ,me/blogfooter
+        :html-format-headline-function my-org-html-format-headline-function
 
-		:html-preamble "<div class='preamble'><div class='homepage'><a href='/'>Home</a> | <a href='/about_me'>About me</a> | <a href='/microblog'>Miniblog</a></div><div class='langs'><a href='/es/'>Español</a> | <a href='/it/'>Italiano</a></div></div>"
-
-		:html-postamble "<div class='footerCopy'>Copyright © 2021-2022 | All rights reserved.</div>"
-
-		)
-		("img"
-		:base-directory "~/Docs/Blog/img/"
-		:publishing-directory "~/Coooode/Github/pages/img/"
-		:publishing-function org-publish-attachment
-		:recursive t
-		)
+	)
+	("img"
+	:base-directory "~/Docs/Blog/img/"
+	:publishing-directory "~/Coooode/Github/pages/img/"
+	:publishing-function org-publish-attachment
+	:recursive t
+	)
         ;("css"
 		;:base-directory "~/Docs/Blog/"
         ;:exclude "*."
@@ -146,22 +177,8 @@ This is only useful when starting a website (testing css, html preambles, etc), 
         ("Blog" :components ("org" "img"))
 	))
 #+end_src
-* Org-export
-** man exports
-#+begin_src emacs-lisp
-(require 'ox-man)
-#+end_src
-** html
-From the Org-mode Manual:
-
-#+begin_quote
-See the variable org-html-doctype-alist for details. *The default is "xhtml-strict".*
-#+end_quote
-#+begin_src emacs-lisp
-(setq org-html-doctype "html5")
-#+end_src
 * Custom Functions
-This functions are used on the [[Keybindings]] section inside Evil's header.
+This functions are used on the [[Keybindings]] section inside Evil's header and in my blog.
 ** switch buffer
 #+begin_src emacs-lisp
 (defun er-switch-to-previous-buffer ()
@@ -178,6 +195,52 @@ This folds inside a header.
   (progn
     (outline-previous-visible-heading 1)
   (org-cycle)))
+#+end_src
+** headlines links
+This searches for a ~CUSTOM_ID~ first. If there are none it uses the header text and replaces all non *alphanumeric* characters with '-'. it also searches inside ~#+OPTIONS~ for the string ~autohdlink:nil~ to omit this and use default org ids.
+#+begin_src emacs-lisp
+(defun my-org-html-format-headline-function (todo todo-type priority text tags info)
+  "Format a headline with a link to itself."
+  (let ((myflag 0)))
+  (setq myflag 0)
+  (when (and (eq major-mode 'org-mode)
+             (eq buffer-read-only nil))
+    (interactive)
+    (save-excursion
+      (widen)
+      (goto-char (point-min))
+      (when (re-search-forward "^#\\+OPTIONS:.*autohdlink:nil" (point-max) t)
+        (setq myflag 1)
+       )
+     )
+   )
+  (let* ((headline (get-text-property 0 :parent text))
+         (customid (org-element-property :CUSTOM_ID headline))
+         (id (or (org-export-get-reference headline info)
+                 (org-element-property :ID headline)))
+         (regeid (replace-regexp-in-string "[^[:alnum:]']" "-" text))
+         (link
+          ;(if (not (re-search-forward "^#\\+OPTIONS:.*autohdlink:n" (point-max)))
+          (if (= myflag 0)
+              (if (not (or (= (length customid) 0)
+                           (null customid)))
+                   (format "<a href=\"#%s\">%s</a>" customid text)
+                   ;(format "<a href=\"#%s\">%s</a>" (replace-regexp-in-string " " "-" (get-text-property 0 :parent text)) text)
+                (format "<a href=\"#%s\">%s</a>" regeid text)
+                ;(save-excursion
+                ;  (goto-char (point-max))
+                ;  (while (outline-previous-heading)
+                ;    ;(org-entry-put (point) "CUSTOM_ID" regeid)
+                ;    (org-id-get-create)
+                ;    ;(org-id-add-location regeid (buffer-file-name))
+                ;  ;(org-map-entries (lambda () (org-custom-id-get (point) 'create regeid)))
+                ;  )
+                ;)
+              )
+        (format "<a href=\"#%s\">%s</a>" id text)
+           )
+        ))
+    (org-html-format-headline-default-function todo todo-type priority link tags info)))
 #+end_src
 * Doom
 Without this header, this config *should* work on default emacs.
@@ -268,6 +331,14 @@ Self -describing, this makes colorfull parentheses. Pretty useful, especially on
 (tool-bar-mode -1)              ; no gtk menu
 (tooltip-mode -1)
 (menu-bar-mode -1)
+(use-package! yasnippet
+  :ensure t
+  ;(:map yas-minor-mode-map
+  ;      ("C-'". yas-expand)
+  ;      ([(tab)] . nil)
+  ;      ("TAB" . nil))
+  :init (add-hook 'prog-mode-hook #'yas-minor-mode)
+  :config (yas-reload-all))
 #+end_src
 * Evil
 ** functionality
