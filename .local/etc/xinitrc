@@ -3,15 +3,24 @@
 # Uncomment to source any default xinitrc
 #[ -d /etc/X11/xinit/xinitrc.d ] && for f in /etc/X11/xinit/xinitrc.d/*; do [ -x "$f" ] && . "$f"; done; unset f
 
+# only run once
+! pidof -s pipewire && pipewire &
+! pidof -s pipewire-pulse && pipewire-pulse &
+! pidof -s easyeffects && easyeffects --gapplication-service & # equalizer
+! pidof -s mpd && mpd &
+
 set-dpi &
-pipewire &
-pipewire-pulse &
-easyeffects --gapplication-service & # equalizer
 picom --experimental-backends -b # blur and transparency
-setkeys &		# keyboard customs
+
+#setkeys &		# keyboard customs
 #firefox &		# firefox auto
-mpd &			# music
-clipmenud &		# clipboard
-dunst &			# notifications
 unclutter -b		# Remove mouse when idle
-exec dwm
+#xbanish -i shift,lock,control,mod1,mod2,mod3,mod4,mod5 -m sw &
+setxkbmap -layout us -variant altgr-intl -option nodeadkeys
+xset r rate 300 50	# Increase key speed via a rate change
+
+clipmenud &		# clipboard
+#dunst &			# notifications
+
+#exec valgrind -s --tool=memcheck --track-origins=yes dwm 2> ~/val.log
+exec dwm 2> "${HOME}/.cache/.dwm"
