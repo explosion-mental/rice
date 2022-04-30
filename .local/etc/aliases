@@ -8,9 +8,27 @@
 
 # functions
 xevv(){ xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'; }
+
 hf() { tac "$HISTFILE" | fzf --no-sort | xclip -selection clipboard -r && xdotool key alt+v ;}
 #cat -n -s "$HISTFILE" | fzf --tac | awk '{$1=""; print $0}' | xclip -selection clipboard -r && xdotool key alt+v
+
 initvimplug() { curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim ;}
+
+initvirt() {
+# virtd
+sudo libvirtd --daemon
+# lockd
+sudo virtlockd --daemon
+# logd
+sudo virtlogd --daemon
+}
+
+killvirt() { sudo killall libvirtd virtlockd virtlogd ;}
+
+setcustomkeys() {
+	setxkbmap -layout us -variant altgr-intl -option nodeadkeys
+	xset r rate 300 50	# Increase key speed via a rate change
+}
 
 alias q=exit
 alias v=vim
@@ -32,6 +50,7 @@ alias apagar="xset dpms force off"
 # templeos font (hurts my eyes)
 alias stos="setsid -f st -f 'TempleOS:style=Regular:size=9:antialias=true:autohint=true'"
 
+
 # Reminder: make some programs not prompt for a password when using sudo
 # echo "$USER ALL=(ALL:ALL) NOPASSWD: 'PROGRAMS'" | sudo tee /etc/sudoers.d/$USER
 
@@ -52,20 +71,21 @@ alias p="sudo pacman"
 # Default flags
 alias cp="cp --interactive --verbose"
 alias mv="mv --interactive --verbose"
-alias rm="rm --interactive=once --verbose"
+alias rm="rm -I --verbose"
 
 # Colorize commands when possible
 alias ls="ls --human-readable --literal --color=auto --group-directories-first"
 alias grep="grep --color=auto"
 alias diff="diff --color=auto"
 alias ccat="highlight --out-format=ansi"
+alias ip="ip -color=auto"
 
 # Common options
 alias \
 	ka=killall \
 	mkd="mkdir -pv"	 \
 	yt="ytfzf -t" \
-	yta="yt -x -f bestaudio/best"	\
+	yta="youtube-dl --add-metadata --extract-audio --format bestaudio/best" \
  	sdn="sudo shutdown -h now" \
 	z=zathura
 	#ffmpeg="ffmpeg -hide_banner"	\
