@@ -1,0 +1,12 @@
+[user]
+	name = explosion-mental
+	email = explosion0mental@gmail.com
+	signingkey = explosion0mental@gmail.com
+
+[commit]
+	gpgsign = true
+[credential]
+	helper = store
+[diff]
+  tool = vimdiff
+  submodule = log

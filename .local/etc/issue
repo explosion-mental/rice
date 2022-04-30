@@ -1,0 +1,4 @@
+\e{lightblue}Benvenuto a \n (\d \t).\e{reset}
+\e{red}\e{bold}[\l]\e{reset}
+
+[?12l[?25h

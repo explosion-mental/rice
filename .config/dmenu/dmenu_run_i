@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# dmenu_run improved, if the command entered ends with the following:
+# - ";" it is started in a terminal
+# - "!" runs as root
+# - "?" scratchpad on my build of dwm
+
+ignore="fire\b\|display\b\|display-buttons\b\|display-coords\b\|pr\b\|printafm\b\|printenv\b\|printf\b\|vi\b\|view\b\|virgl_test_server\b\|virtchd\b\|virtinterfaced\b\|virtlockd\b\|virtlogd\b\|virtlxcd\b\|virt-admin\b\|virt-clone\b\|virt-host-validate\b\|virt-install\b\|virt-login-shell\b\|virsh\b\|pack200\b\|pack200.debuginfo\b"
+
+cmd="$(dmenu_path | sed "/$ignore/d" | dmenu "$@")"
+
+[ -z "$cmd" ] && exit
+
+case "$cmd" in
+	# Run on a terminal instance
+	*\;)
+		"$TERMINAL" -e "${cmd%?}" & ;;
+	neomutt|htop|btop)
+		"$TERMINAL" -e "${cmd}" & ;;
+	*\!) # Run as root
+		"$TERMINAL" -e sudo -A "${cmd%?}" & ;;
+	*\?) # Run on a scratchpad terminal instance (dwm specific)
+		"$TERMINAL" -n term -g 115x30 -e "${cmd%?}" & ;;
+	# Run customs programs with customs hooks
+	hydrogen)
+		pw-jack "$cmd" & ;;
+	gomuks)
+		alacritty -e gomuks "$cmd" & ;;
+	gparted)
+		sudo -A gparted & ;;
+	xcolor)
+		xcolor --selection clipboard & ;;
+	syncthing)
+		syncthing & ;;
+		#kill -55 "$(pidof dwmblocks)" ;;
+	onlyoffice-desktopeditors)
+		onlyoffice-desktopeditors --system-title-bar & ;;
+	*)
+		"$cmd" &
+esac

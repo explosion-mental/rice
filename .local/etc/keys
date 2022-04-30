@@ -1,0 +1,46 @@
+! capslock
+! keycode 79 = Caps_Lock
+! AltGr
+keycode 105 = ISO_Level3_Shift
+! shift
+clear Shift
+keycode 135 = Shift_R
+add Shift = Shift_R
+!keycode 62 = Shift_Lock
+!add Shift = Shift_Lock
+! Control
+clear Control
+keycode 108 = Control_R
+add Control = Control_R
+add Control = Control_L
+
+! use 94 for altgr
+clear mod1
+keycode 64 = ISO_Level3_Shift
+keycode 94 = Alt_L
+add mod1 = Alt_L
+
+! vimkeystoarrowkeys
+! key        normal	shift  mode_shift  mode_shift+shift	altgr 	shift+altgr !
+!-----------------------------------------------------------------------------------!
+keycode 43 = h		H	NoSymbol	NoSymbol	Left	BackSpace
+keycode 44 = j		J	NoSymbol	NoSymbol	Down	Home
+keycode 45 = k		K	NoSymbol	NoSymbol	Up	End
+keycode 46 = l		L	NoSymbol	NoSymbol	Right	Delete
+keycode 65 = space	Escape	NoSymbol	NoSymbol	Escape	NoSymbol
+keycode 59 = comma	less	comma		less      BackSpace	ccedilla
+keycode 60 = period	greater	period		greater		Delete	dead_caron
+!keycode 51 = backslash	bar	NoSymbol	NoSymbol	Escape	NoSymbol
+!keycode 36 = Return	Return	NoSymbol	NoSymbol	Escape	NoSymbol
+
+! MediaKeys (only for old keyboards that doesn't have these)
+!keycode 83 = XF86AudioLowerVolume
+!keycode 84 = XF86AudioRaiseVolume
+!keycode 85 = XF86AudioMute
+!keycode 87 = XF86XK_AudioPause
+!keycode 90 = XF86AudioStop
+!keycode 104 = XF86Calculator
+!keycode 87 = XF86AudioPrev
+!keycode 88 = XF86AudioNext
+!keycode 115 = XF86Sleep
+!keycode 110 = XF86ScreenSaver

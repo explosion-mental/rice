@@ -1,0 +1,30 @@
+[Default Applications]
+application/x-designer=designer-qt4.desktop;
+application/x-ms-dos-executable=wine.desktop;
+audio/x-minipsf=audacious.desktop;
+audio/x-psf=audacious.desktop;
+application/atom+xml=firefox.desktop;
+application/rss+xml=firefox.desktop;
+application/vnd.mozilla.xul+xml=firefox.desktop;
+application/x-mozilla-bookmarks=firefox.desktop;
+application/x-mswinurl=firefox.desktop;
+application/x-xbel=firefox.desktop;
+application/xhtml+xml=firefox.desktop;
+text/html=firefox.desktop;
+text/opml+xml=firefox.desktop;
+
+[Added Associations]
+application/x-designer=designer-qt4.desktop;
+application/x-ms-dos-executable=wine.desktop;
+audio/x-minipsf=audacious.desktop;
+audio/x-psf=audacious.desktop;
+application/atom+xml=firefox.desktop;
+application/rss+xml=firefox.desktop;
+application/vnd.mozilla.xul+xml=firefox.desktop;
+application/x-mozilla-bookmarks=firefox.desktop;
+application/x-mswinurl=firefox.desktop;
+application/x-xbel=firefox.desktop;
+application/xhtml+xml=firefox.desktop;
+text/html=firefox.desktop;
+text/opml+xml=firefox.desktop;
+

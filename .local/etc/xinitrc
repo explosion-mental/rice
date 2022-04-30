@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Uncomment to source any default xinitrc
+#[ -d /etc/X11/xinit/xinitrc.d ] && for f in /etc/X11/xinit/xinitrc.d/*; do [ -x "$f" ] && . "$f"; done; unset f
+
+set-dpi &
+pipewire &
+pipewire-pulse &
+easyeffects --gapplication-service & # equalizer
+picom --experimental-backends -b # blur and transparency
+setkeys &		# keyboard customs
+#firefox &		# firefox auto
+mpd &			# music
+clipmenud &		# clipboard
+dunst &			# notifications
+unclutter -b		# Remove mouse when idle
+exec dwm

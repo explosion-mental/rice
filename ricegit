@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# set configs and personal file structure
+# dep: git, make, cc, mv, rm
+
+# Customize below to fit your system
+hub=github.com		# my rice is mirrored on codeberg as well
+link="https://$hub/explosion-mental"
+ricedir=/tmp/rice
+super=sudo
+
+# main configs
+git clone $link/rice $ricedir
+
+# if .config or .local exits rename them
+[ -d ~/.config ] && mv -v ~/.config ~/oldconfig
+[ -d ~/.local ] && mv -v ~/.local ~/oldlocal
+mv -v $ricedir/.config/ ~/
+mv -v $ricedir/.local ~/
+
+# custom entry for my grub wallpaper
+$super mkdir -p -v /usr/local/share/wallpaper
+$super mv -v $ricedir/GNU-Black.png /usr/local/share/wallpaper
+
+# miscellaneous
+mv -v $ricedir/.mozilla ~/
+mv -v $ricedir/.zshenv ~/
+mv -v $ricedir/.pam_environment ~/
+
+# fetch and compile from source
+git clone $link/Dwm ~/.config/dwm
+git clone $link/dwmblocks ~/.config/dwmblocks
+git clone $link/sxiv ~/.config/sxiv
+sudo make install -C ~/.config/dwm
+sudo make install -C ~/.config/dwmblocks
+sudo make install -C ~/.config/sxiv
+
+# remove temporal rice files
+rm -r -v $ricedir

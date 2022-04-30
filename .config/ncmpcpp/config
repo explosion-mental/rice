@@ -1,0 +1,89 @@
+# General
+ncmpcpp_directory = "~/.config/ncmpcpp"
+lyrics_directory = "~/.local/share/lyrics"
+fetch_lyrics_for_current_song_in_background = yes
+follow_now_playing_lyrics = yes
+mpd_music_dir = "~/Media/Music/"
+mpd_host = "localhost"
+mpd_port = "6600"
+message_delay_time = "1"
+connected_message_on_startup = no
+media_library_primary_tag = album_artist
+media_library_albums_split_by_date = no
+startup_screen = "media_library"
+display_volume_level = yes
+ignore_leading_the = yes
+use_console_editor = yes
+external_editor = nvim
+
+#execute_on_song_change="~/.config/ncmpcpp/art.sh"
+#song_window_title_format = "ncmpcpp{ - %A}{ - %t}"
+
+# Formats
+song_list_format = {$4%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
+song_status_format = $b{{$8"%t"}} $3by {$4%a{ $3in $7%b{ (%y)}} $3}|{$8%f}
+song_library_format = {%n - }{%t}|{%f}
+alternative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
+alternative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
+
+# Colors
+colors_enabled = yes
+header_window_color = cyan
+volume_color = white
+main_window_color = white
+progressbar_color = black:b
+progressbar_elapsed_color = blue:b
+statusbar_color = red
+statusbar_time_color = cyan:b
+empty_tag_color = magenta
+current_item_prefix = $(green)$r$b
+current_item_suffix = $/r$(end)$/b
+current_item_inactive_column_prefix = $(default)$r
+current_item_inactive_column_suffix = $/r$(end)
+
+# Display Modes
+playlist_display_mode = columns
+autocenter_mode = yes
+browser_display_mode = columns
+playlist_editor_display_mode = "columns"
+search_engine_display_mode = "columns"
+
+
+#progressbar_look = ->
+#progressbar_look = ""
+progressbar_look = "🎸"
+#empty_tag_marker=" -- ‼ -- "
+
+## Selected tracks ##
+#selected_item_prefix = "* "
+discard_colors_if_item_is_selected = no
+now_playing_prefix = "$b$8      "
+
+## Navigation ##
+cyclic_scrolling = yes
+header_text_scrolling = yes
+jump_to_now_playing_song_at_start = yes
+lines_scrolled = "2"
+
+## Seeking ##
+incremental_seeking = "yes"
+seek_time = "1"
+
+## Visualizer ##
+#visualizer_fifo_path = "/tmp/mpd.fifo"
+visualizer_data_source = "/tmp/mpd.fifo"
+visualizer_output_name = "my_fifo"
+#visualizer_sync_interval = "60"
+#buffer_time = 100000
+visualizer_in_stereo = yes
+visualizer_type = spectrum
+visualizer_look = "◆▋"
+
+#now_playing_suffix = "$/b$8 $b $3$8 $/b"
+#current_item_prefix = "$/b$b $7 $8 $/b "
+#current_item_suffix = "      $8"
+#song_list_format = " {%t $R   $8%a$8}|{%f $R   $8%l$8} $8" # This does nothing(?)
+##execute_on_song_change = notify-send "Now Playing" "$(mpc --format '%title% \n%artist% - %album%' current)"
+execute_on_song_change = xsetroot -name 11
+execute_on_player_state_change = xsetroot -name 11
+# vim: filetype=conf

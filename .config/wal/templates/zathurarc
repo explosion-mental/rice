@@ -1,0 +1,70 @@
+set sandbox none
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+set selection-clipboard clipboard
+map <Up> scroll half-up
+map <C-k> scroll full-up
+map <C-j> scroll full-down
+map <Down> scroll half-down
+map [fullscreen] g goto top
+map [fullscreen] D toggle_page_mode
+map [fullscreen] u scroll half-up
+map [fullscreen] d scroll half-down
+map [fullscreen] R reload
+map [fullscreen] r rotate
+map [fullscreen] = zoom in
+map [fullscreen] i recolor
+map [fullscreen] f toggle_fullscreen
+map [fullscreen] F follow
+map [fullscreen] C-f display_link
+map [fullscreen] b toggle_statusbar
+map [fullscreen] w adjust_window width
+map [fullscreen] W adjust_window best-fit
+map g goto top
+map D toggle_page_mode
+map u scroll half-up
+map d scroll half-down
+map R reload
+map r rotate
+map = zoom in
+map i recolor
+map f toggle_fullscreen
+map F follow
+map C-f display_link
+map b toggle_statusbar
+map p print
+map w adjust_window width
+map W adjust_window best-fit
+map 0 adjust_window width
+map 9 adjust_window best-fit
+#map s toggle_statusbar
+#map I recolor-keephue
+#map l zoom in
+#map h zoom out
+#set window-title-home-tilde
+set window-title-basename
+set window-title-page
+set guioptions ""
+set font 'unifont 10'
+
+set default-bg                     "{color2}"
+set default-fg                     "{foreground}"
+set statusbar-bg                   "{color2}"
+set statusbar-fg                   "{background}"
+set inputbar-bg                    "{color2}"
+set inputbar-fg                    "{background}"
+set notification-bg                "{color2}"
+set notification-fg                "{background}"
+set notification-error-bg          "{background}"
+set notification-error-fg          "{foreground}"
+set notification-warning-bg        "{background}"
+set notification-warning-fg        "{foreground}"
+set highlight-color                "{color6}"
+set highlight-active-color         "{color2}"
+set completion-bg                  "{color3}"
+set completion-fg                  "{color4}"
+set completion-highlight-bg        "{color3}"
+set completion-highlight-fg        "{color4}"
+set recolor-lightcolor             "{background}"
+set recolor-darkcolor              "{foreground}"

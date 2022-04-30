@@ -1,0 +1,11 @@
+autouser=faber
+BAUD_RATE=38400
+TERM_NAME=linux
+
+if [ -x /sbin/agetty ] || [ -x /bin/agetty ]; then
+	# util-linux specific settings
+	if [ "${tty}" = "tty1" ]; then
+		#GETTY_ARGS="--noclear"
+		GETTY_ARGS="-n -o $autouser"
+	fi
+fi

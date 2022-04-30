@@ -1,0 +1,73 @@
+# Feed settings
+#prepopulate-query-feeds yes
+refresh-on-startup yes
+#reload-time 20
+#show-read-feeds no
+#auto-reload yes
+#always-display-description yes
+#reload-time 180
+reload-threads 100
+external-url-viewer "urlscan -dc -r 'linkhandler {}'"
+
+bind-key j down
+bind-key k up
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key G end
+bind-key g home
+bind-key d pagedown
+bind-key u pageup
+bind-key l open
+bind-key h quit
+bind-key a toggle-article-read
+bind-key n next
+bind-key p prev
+bind-key N prev-unread
+bind-key D pb-download
+bind-key U show-urls
+bind-key x pb-delete
+bind-key m toggle-show-read-feeds
+
+browser linkhandler
+macro , open-in-browser
+macro t set browser "qndl" ; open-in-browser ; set browser linkhandler
+macro a set browser "ts youtube-dl --add-metadata -xic -f bestaudio/best" ; open-in-browser ; set browser linkhandler
+macro v set browser "vlc" ; open-in-browser ; set browser linkhandler
+macro w set browser "lynx" ; open-in-browser ; set browser linkhandler
+macro d set browser "dmenuhandler" ; open-in-browser ; set browser linkhandler
+#macro c set browser "xsel -b <<<" ; open-in-browser ; set browser linkhandler
+macro c set browser "echo %u | xclip -r -sel c" ; open-in-browser ; set browser linkhandler
+macro s set browser "surf" ; open-in-browser ; set browser linkhandler
+#macro C set browser "youtube-viewer --comments=%u" ; open-in-browser ; set browser linkhandler
+#macro p set browser "peertubetorrent %u 480" ; open-in-browser ; set browser linkhandler
+#macro P set browser "peertubetorrent %u 1080" ; open-in-browser ; set browser linkhandler
+
+color listnormal red default
+color listnormal_unread cyan default bold
+color listfocus color16 green
+color listfocus_unread color16 green
+color article default default
+color info color247   color235 bold
+#ignore-article "*" "tags =~\"content\""
+#ignore-article "*" "tags # \"Headers\""
+#ignore-article "------------------📀Linux------------------" "tags =~ \"Headers\""
+#ignore-article "---------------🎮Entretaiment--------------" "tags =~ \"Headers\""
+#ignore-article "-----------------🧪Science-----------------" "tags =~ \"Headers\""
+#ignore-article "----------------📰Noticias----------------" "tags =~ \"Headers\""
+#ignore-article "*" "title =~ \"Reddit\""
+#ignore-mode "display"
+
+highlight all "---.*---" white default bold blink
+highlight feedlist ".*(0/0))" default default invis
+highlight article "(^Title:.*|^Author:.*)" blue default bold
+highlight article "(^Link:.*|^Date:.*)" default default
+highlight article "https?://[^ ]+" green default
+highlight article "^(Title):.*$" cyan default bold
+highlight article "\\[[0-9][0-9]*\\]" magenta default bold
+highlight article "\\[image\\ [0-9]+\\]" green default bold
+highlight article "\\[embedded flash: [0-9][0-9]*\\]" green default bold
+highlight article ":.*\\(link\\)$" cyan default
+highlight article ":.*\\(image\\)$" blue default
+highlight article ":.*\\(embedded flash\\)$" magenta default

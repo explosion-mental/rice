@@ -1,0 +1,392 @@
+#+TITLE: Custom config for doom emacs
+#+startup: overview
+* Org-mode
+** Hooks
+Custom hooks (functions that executes when 'org' files are opened.
+#+begin_src emacs-lisp
+(add-hook! org-mode
+    ;'org-mode-hook #'mixed-pitch-mode
+	(setq-local display-line-numbers nil)
+	(+zen/toggle)
+    (my/org-mode/load-prettify-symbols)
+)
+#+end_src
+** Pretty simbols
+#+begin_src emacs-lisp
+(defun my/org-mode/load-prettify-symbols () "Prettify org mode keywords"
+  (interactive)
+  (setq prettify-symbols-alist
+    (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+          '(
+            ("#+begin_src" . ?🔜)
+            ("#+end_src" . ?🔝)
+            ("#+begin_quote" . ?💭)
+            ("#+end_quote" . ?🗯)
+            ;("#+begin_example" . ?)
+            ;("#+end_example" . ?)
+            ("#+OPTIONS:" . ?⚙)
+            ("#+startup:" . ?🏁)
+            ("#+DATE:" . ?📅)
+            ("#+AUTHOR:" . ?✍)
+            ("#+TITLE:" . ?📖)
+            ("#+language:" . ?🔤)
+            ("[ ]" .  ?☐)
+            ("[X]" . ?☑)
+            ("[-]" . ?❍)
+            ;("lambda" . ?λ)
+            ;("#+header:" . ?)
+            ;("#+name:" . ?﮸)
+            ("#+results:" . ?🏁)
+            ;("#+call:" . ?)
+            ;(":properties:" . ?)
+            ;(":logbook:" . ?)
+            )))
+  (prettify-symbols-mode 1))
+#+end_src
+** Configuration
+#+begin_src emacs-lisp
+(setq org-startup-indented t
+      org-bullets-bullet-list '("") ;; no bullets, needs org-bullets package
+      org-bullets-face-name ""
+      org-ellipsis "  " ;; folding symbol
+      org-pretty-entities t
+      org-hide-emphasis-markers t
+      ;; show actually italicized text instead of /italicized text/
+      org-agenda-block-separator ""
+      org-fontify-whole-heading-line t
+      org-fontify-done-headline t
+      org-fontify-quote-and-verse-blocks t
+      org-superstar-headline-bullets-list '("" "" "" "" "")
+)
+#+end_src
+** org-headings
+#+begin_src emacs-lisp
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.2))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.05))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.03))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.02))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+)
+#+end_src
+** templates blocks
+- ~<py~ python (:output)
+- ~<pv~ python (:value)
+- ~<el~ emacs-lisp
+- ~<e~  example
+- ~<q~ quote
+#+begin_src emacs-lisp
+(require 'org-tempo)
+;(use-package org-tempo
+;    :defer t ; autoload this package
+;    :init
+(add-to-list 'org-structure-template-alist '("py" . "src python :results output"))
+(add-to-list 'org-structure-template-alist '("pv" . "src python :results value"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+;)
+#+end_src
+* Org-Publish
+** functions
+#+begin_src emacs-lisp
+;(defun ravipro-format-entry (entry style project)
+;    (format "[[file:%s][%s]] --- %s"
+;            entry
+;            (org-publish-find-title entry project)
+;            (format-time-string "%Y-%m-%d" (org-publish-find-date entry project))))
+#+end_src
+** Publish everything
+The following makes /org-publish/ publish every file and not only the ones that has changed.
+
+This is only useful when starting a website (testing css, html preambles, etc), but after you got the base this makes publishing slow.
+#+begin_src emacs-lisp
+(setq org-publish-use-timestamps-flag nil)
+#+end_src
+** Blog
+#+begin_src emacs-lisp
+(setq org-publish-project-alist
+      '(("org"
+        :base-directory "~/Docs/Blog/"
+        :publishing-directory "~/Coooode/Github/pages"
+        :publishing-function org-html-publish-to-html
+        ;:exclude "style\.org"
+        :recursive t
+        :section-numbers nil
+        :with-toc nil
+        :html-head "<link rel=\"stylesheet\" href=\"/style.css\" type=\"text/css\"/>"
+
+		:html-preamble "<div class='preamble'><div class='homepage'><a href='/'>Home</a> | <a href='/about_me'>About me</a> | <a href='/microblog'>Miniblog</a></div><div class='langs'><a href='/es/'>Español</a> | <a href='/it/'>Italiano</a></div></div>"
+
+		:html-postamble "<div class='footerCopy'>Copyright © 2021-2022 | All rights reserved.</div>"
+
+		)
+		("img"
+		:base-directory "~/Docs/Blog/img/"
+		:publishing-directory "~/Coooode/Github/pages/img/"
+		:publishing-function org-publish-attachment
+		:recursive t
+		)
+        ;("css"
+		;:base-directory "~/Docs/Blog/"
+        ;:exclude "*."
+        ;:include "style.org"
+		;:publishing-directory "~/Coooode/Github/pages/"
+        ;:publishing-function org-babel-tangle-publish
+        ;)
+
+        ;("rss"
+		;:base-directory "~/Docs/Blog/"
+		;:publishing-directory "~/Coooode/Github/pages/"
+        ;:base-extension "org"
+        ;:html-link-home "explosion-mental.codeberg.page"
+        ;:html-link-use-abs-url t
+        ;:rss-extension "xml"
+        ;:publishing-function (org-rss-publish-to-rss)
+        ;:recursive t
+        ;)
+        ("Blog" :components ("org" "img"))
+	))
+#+end_src
+* Org-export
+** man exports
+#+begin_src emacs-lisp
+(require 'ox-man)
+#+end_src
+** html
+From the Org-mode Manual:
+
+#+begin_quote
+See the variable org-html-doctype-alist for details. *The default is "xhtml-strict".*
+#+end_quote
+#+begin_src emacs-lisp
+(setq org-html-doctype "html5")
+#+end_src
+* Custom Functions
+This functions are used on the [[Keybindings]] section inside Evil's header.
+** switch buffer
+#+begin_src emacs-lisp
+(defun er-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+#+end_src
+** fold
+This folds inside a header.
+#+begin_src emacs-lisp
+(defun up-n-fold ()
+  (interactive)
+  (progn
+    (outline-previous-visible-heading 1)
+  (org-cycle)))
+#+end_src
+* Doom
+Without this header, this config *should* work on default emacs.
+** Font
+Old serif like font from the ET book only for org mode text (not inclusing: codeblocks, emacs messages, etc) and a good chunky monospace font for everything else.
+#+begin_src emacs-lisp
+(setq mixed-pitch-set-heigth t)
+(setq
+ doom-font (font-spec :family
+                 ;"SauceCodePro Nerd Font"
+                 "JetBrains Mono"
+			     ;"ETBembo"
+			     :size 16
+                ;:weight 'semi-light)
+                )
+ doom-variable-pitch-font (font-spec :family "ETBembo" :size 16)
+ doom-unicode-font (font-spec :family "JoyPixels" :size 16)
+)
+#+end_src
+** Theme
+#+begin_src emacs-lisp
+(setq doom-theme
+		;'doom-one
+		;'doom-dracula
+		;'doom-vibrant
+		;'theme-magic
+        'doom-gruvbox-light
+        ;'plan9
+)
+#+end_src
+
+** Defaults
+Much comfy def:
++ remove parenthesis completition
++ rename buffer name
+#+begin_src emacs-lisp
+(remove-hook 'doom-first-buffer-hook #'smartparens-global-mode)
+(setq doom-fallback-buffer-name "► Doom"
+      +doom-dashboard-name "► Doom")
+#+end_src
+* Main
+** Line numbers
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+#+end_src
+** Rainbow delimeters
+Self -describing, this makes colorfull parentheses. Pretty useful, especially on lisp🤣.
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+end_src
+** defaults
+#+begin_src emacs-lisp
+(setq-default
+ window-combination-resize t                      ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+
+(setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
+      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+;;      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
+      truncate-string-ellipsis t                ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      scroll-margin 2)                            ; It's nice to maintain a little margin
+#+end_src
+** company whichkey
+#+begin_src emacs-lisp
+;(require 'company)
+;(use-package company
+;  :defer t ; autoload this package
+;  :config
+;(setq company-idle-delay 0.3
+;      company-minimum-prefix-length 3)
+;)
+(setq which-key-idle-delay 0.3) ; default its like 1 sec
+(setq which-key-allow-multiple-replacements t)
+(after! which-key
+;  (setq! which-key-idle-delay 0.3
+;         which-key-idle-secondary-delay 0.2)
+  (pushnew!
+   which-key-replacement-alist ; remove 'evil-X' from commands
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   )
+)
+#+end_src
+* Annoyances
+#+begin_src emacs-lisp
+(setq confirm-kill-emacs nil)   ; Just quiiiiiit
+(scroll-bar-mode -1)            ; no scroll bar
+(tool-bar-mode -1)              ; no gtk menu
+(tooltip-mode -1)
+(menu-bar-mode -1)
+#+end_src
+* Evil
+** functionality
+#+begin_src emacs-lisp
+;(use-package! evil
+;  :defer t
+;  :custom
+;(evil-ex-search-persistent-highlight nil)
+;(+evil-want-o/O-to-continue-comments nil)
+;(evil-cross-lines t)
+;)
+#+end_src
+** Keybindings
+#+begin_src emacs-lisp
+(global-evil-leader-mode)
+(evil-leader/set-leader ",")
+(evil-leader/set-key
+  "," 'counsel-M-x			; ":"
+  ";" 'eval-expression		; M-:
+  "w" 'evil-write			; :w
+  "q" 'kill-emacs			; Just quit and not prompt me
+  "c" 'org-latex-export-to-pdf	; compile org to latex to pdf
+  "b" 'switch-to-buffer		; bloatffers
+  "f" 'counsel-fzf			; fzf
+  "s" 'yas-insert-snippet   ; time
+  ;;Tables
+  "h" 'org-table-insert-hline	; header
+  "A" 'org-table-insert-row		; row
+  "a" 'org-table-insert-column	; column
+  "v" 'org-table-toggle-coordinate-overlays ; show reference
+  ;"e" 'org-html-export-to-html	; html
+  "e" 'org-export-dispatch		; export to..
+  "p" 'org-publish-current-project	; publish blog
+  "z" '+zen/toggle              ; toggle zen mode
+  ;"d" 'ispell-change-dictionary ; switch to other lang
+  ;"d" 'my-ispell-change-dictionaries
+  "TAB" 'up-n-fold              ; fold the outter header
+  ;"g" 'ravipro-format-entry
+  "t" 'org-babel-tangle         ; tangle code
+  ;"h" 'blog-publish-all        ; publish blog
+  "SPC" 'er-switch-to-previous-buffer	; switch buffers (without buffer)
+)
+#+end_src
+** evil-escape
+Didn't know this, but comma(,) and a dot(.) seems to be a good key sequence to change modes.
+I would change it to doble /RET/ but It doesn't work.
+/Note/: This is to change to 'normal' mode when in insert mode.
+#+begin_src emacs-lisp
+(setq-default evil-escape-key-sequence ",.")
+#+end_src
+* Troubleshooting
+Mostly for startup time.
+** time
+This tells the startup time. It seems to be overwritten by /Package 'cl is deprecated/.
+#+begin_src emacs-lisp
+;(add-hook 'emacs-startup-hook
+;          (lambda ()
+;            (message "Emacs ready in %s with %d garbage collections."
+;                     (format "%.2f seconds"
+;                             (float-time
+;                              (time-subtract after-init-time before-init-time)))
+;                     gcs-done)))
+#+end_src
+** garbage collection
+#+begin_src emacs-lisp
+;(setq gc-cons-threshold (* 50 1000 1000))
+
+;; The rest of the init file.
+
+;; Make gc pauses faster by decreasing the threshold.
+;(setq gc-cons-threshold (* 2 1000 1000))
+#+end_src
+* Spellchecking
+TODO
+** dictionaries
+#+begin_src emacs-lisp
+;(defface ispell-alpha-num-choice-face
+;  '((t (:background "black" :foreground "red")))
+;  "Face for `ispell-alpha-num-choice-face`."
+;  :group 'ispell)
+;
+;(defface ispell-text-choice-face
+;  '((t (:background "black" :foreground "forestgreen")))
+;  "Face for `ispell-text-choice-face`."
+;  :group 'ispell)
+;
+;(defun my-ispell-change-dictionaries ()
+;"Switch between language dictionaries."
+;(interactive)
+;  (let ((choice (read-char-exclusive (concat
+;          "["
+;          (propertize "E" 'face 'ispell-alpha-num-choice-face)
+;          "]"
+;          (propertize "nglish" 'face 'ispell-text-choice-face)
+;          " | ["
+;          (propertize "S" 'face 'ispell-alpha-num-choice-face)
+;          "]"
+;          (propertize "panish" 'face 'ispell-text-choice-face)))))
+;    (cond
+;      ((eq choice ?E)
+;        (setq flyspell-default-dictionary "english")
+;        (setq ispell-dictionary "english")
+;        (setq ispell-personal-dictionary "~/.local/share/dicts/en")
+;        (ispell-kill-ispell)
+;        (message "English"))
+;      ((eq choice ?S)
+;        (setq flyspell-default-dictionary "spanish")
+;        (setq ispell-dictionary "spanish")
+;        (setq ispell-personal-dictionary "~/.local/share/dicts/es")
+;        (ispell-kill-ispell)
+;        (message "Español"))
+;      (t (message "No changes have been made."))) ))
+#+end_src
+** ignore org things
+#+begin_src emacs-lisp
+;  (use-package! ispell
+;  :config
+;  (pushnew! ispell-skip-region-alist
+;            '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:")
+;            '("#\\+BEGIN_SRC" . "#\\+END_SRC")
+;            '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE")))
+#+end_src

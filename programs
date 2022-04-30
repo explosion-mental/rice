@@ -1,0 +1,35 @@
+# 'core' programs I use/need
+##X
+xbps-install xorg xdotool xcompmgr xwallpaper unclutter
+##GUI
+xbps-install firefox
+##RICE
+xbps-install ueberzug zsh git nvim vifm dbus NetworkManager youtube-dl newsboat unzip dunst pywal
+
+##CLI
+xbps-install jq fzf mediainfo neofetch scrot lsd ts wget mpv htop
+
+##music
+xbps-install mpc mpd ncmpcpp
+
+#pulseaudio
+xbps-install pulseaudio pamixer
+
+#killall
+xbps-install psmisc
+
+#wifi
+#xbps-install dkms bc linux-headers linux-firmware
+# Emoji Fonts
+xbps-install noto-color-emoji
+
+#suckless
+xbps-install make gcc pkg-config libX11-devel libXft-devel libXinerama-devel harfbuzz-devel imlib2-devel libexif-devel giflib-devel
+
+## libxft-bgra
+#xbps-install libtool gettext xorg-util-macros automake autoconf
+
+#git clone https://github.com/uditkarode/libxft-bgra $HOME/.local/src/libxft-bgra
+#cd $HOME/.local/src/libxft-bgra
+#sh autogen.sh --sysconfdir=/etc --prefix=/usr --mandir=/usr/share/man
+#sudo make install
