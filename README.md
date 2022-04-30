@@ -3,12 +3,16 @@ My **rice**. Basically dotfiles, configs and all I need just to keep track of
 everything.
 
 
+Any suggestions are welcome.
+
+
 # GNU-Black.png
 Grub splash modifed by me with gimp. Looks beautiful for my taste.
 
 
 **Note**: _I'm not the author of the image._
 
+If you are the author, please contact me if there are any issues.
 
 # Firefox
 If you want to use firefox with a "_toggleable bar_" (with Control+l or F6),
